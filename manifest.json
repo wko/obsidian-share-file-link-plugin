@@ -1,11 +1,10 @@
 {
-	"id": "sample-plugin",
-	"name": "Sample Plugin",
-	"version": "1.0.0",
-	"minAppVersion": "0.15.0",
-	"description": "Demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
+	"id": "obsidian-link-sharer",
+	"name": "Obsidian Link Sharer",
+	"version": "0.1.0",
+	"minAppVersion": "1.0.0",
+	"description": "Share vault links with your team in Slack, Teams, and other messaging apps",
+	"author": "wko",
+	"authorUrl": "https://github.com/wko",
 	"isDesktopOnly": false
 }

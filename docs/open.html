@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Opening Obsidian Link...</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      margin: 0;
+    }
+    .container {
+      text-align: center;
+      padding: 20px;
+    }
+    h1 { margin: 0 0 20px 0; font-size: 24px; }
+    p { margin: 0 0 30px 0; opacity: 0.9; }
+    .spinner {
+      border: 4px solid rgba(255,255,255,0.3);
+      border-top: 4px solid white;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .error { color: #ff6b6b; }
+    a { color: white; text-decoration: underline; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 id="title">Opening in Obsidian...</h1>
+    <div class="spinner" id="spinner"></div>
+    <p id="fallback" class="hidden">
+      If Obsidian doesn't open,<br>
+      <a href="#" id="manual-link">click here to try again</a><br><br>
+      <small>Don't have Obsidian? <a href="https://obsidian.md">Download it here</a></small>
+    </p>
+    <p id="error" class="hidden error"></p>
+  </div>
+
+  <script>
+    // URL-safe Base64 decoder (RFC 4648)
+    function base64UrlDecode(str) {
+      try {
+        // Add padding
+        const padded = str + '==='.slice((str.length + 3) % 4);
+        // Replace URL-safe chars with standard Base64 chars
+        const base64 = padded.replace(/-/g, '+').replace(/_/g, '/');
+        // Decode
+        return decodeURIComponent(escape(atob(base64)));
+      } catch (e) {
+        console.error('Decode error:', e);
+        return null;
+      }
+    }
+
+    function showError(message) {
+      document.getElementById('title').textContent = 'Error';
+      document.getElementById('spinner').classList.add('hidden');
+      document.getElementById('error').textContent = message;
+      document.getElementById('error').classList.remove('hidden');
+    }
+
+    function showFallback(obsidianURI) {
+      document.getElementById('fallback').classList.remove('hidden');
+      document.getElementById('manual-link').href = obsidianURI;
+    }
+
+    // Main logic
+    (function() {
+      const params = new URLSearchParams(window.location.search);
+      const encodedLink = params.get('link');
+
+      if (!encodedLink) {
+        showError('No link provided. The URL appears to be incomplete.');
+        return;
+      }
+
+      const obsidianURI = base64UrlDecode(encodedLink);
+
+      if (!obsidianURI) {
+        showError('Invalid link. The encoded data could not be decoded.');
+        return;
+      }
+
+      if (!obsidianURI.startsWith('obsidian://')) {
+        showError('Invalid link. Expected an Obsidian URI.');
+        return;
+      }
+
+      // Set up fallback link
+      document.getElementById('manual-link').href = obsidianURI;
+
+      // Attempt redirect
+      window.location.href = obsidianURI;
+
+      // Show fallback after 2 seconds if redirect didn't work
+      setTimeout(function() {
+        showFallback(obsidianURI);
+      }, 2000);
+    })();
+  </script>
+</body>
+</html>

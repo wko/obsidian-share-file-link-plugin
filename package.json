@@ -1,7 +1,7 @@
 {
-	"name": "obsidian-sample-plugin",
-	"version": "1.0.0",
-	"description": "This is a sample plugin for Obsidian (https://obsidian.md)",
+	"name": "obsidian-link-sharer",
+	"version": "0.1.0",
+	"description": "Share vault links with your team in Slack, Teams, and other messaging apps",
 	"main": "main.js",
 	"type": "module",
 	"scripts": {

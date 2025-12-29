@@ -1,90 +1,120 @@
-# Obsidian Sample Plugin
+# Obsidian Link Sharer
 
-This is a sample plugin for Obsidian (https://obsidian.md).
+Share Obsidian vault links with your team in Slack, Teams, and other messaging apps.
 
-This project uses TypeScript to provide type checking and documentation.
-The repo depends on the latest plugin API (obsidian.d.ts) in TypeScript Definition format, which contains TSDoc comments describing what it does.
+## Why?
 
-This sample plugin demonstrates some of the basic functionality the plugin API can do.
-- Adds a ribbon icon, which shows a Notice when clicked.
-- Adds a command "Open modal (simple)" which opens a Modal.
-- Adds a plugin setting tab to the settings page.
-- Registers a global click event and output 'click' to the console.
-- Registers a global interval which logs 'setInterval' to the console.
+When collaborating with teammates on a shared Obsidian vault, you often want to point them to specific notes. Normal `obsidian://` links don't work in most chat apps because they get blocked or mangled.
 
-## First time developing plugins?
+This plugin generates standard HTTPS links that:
+- Work in Slack, Teams, WhatsApp, email, and any messaging app
+- Open directly in Obsidian when clicked
+- Don't require any setup for recipients (just Obsidian installed)
 
-Quick starting guide for new plugin devs:
+## How It Works
 
-- Check if [someone already developed a plugin for what you want](https://obsidian.md/plugins)! There might be an existing plugin similar enough that you can partner up with.
-- Make a copy of this repo as a template with the "Use this template" button (login to GitHub if you don't see it).
-- Clone your repo to a local development folder. For convenience, you can place this folder in your `.obsidian/plugins/your-plugin-name` folder.
-- Install NodeJS, then run `npm i` in the command line under your repo folder.
-- Run `npm run dev` to compile your plugin from `main.ts` to `main.js`.
-- Make changes to `main.ts` (or create new `.ts` files). Those changes should be automatically compiled into `main.js`.
-- Reload Obsidian to load the new version of your plugin.
-- Enable plugin in settings window.
-- For updates to the Obsidian API run `npm update` in the command line under your repo folder.
+1. Right-click any file in Obsidian and select **"Copy Shareable Link"**
+2. Paste the link in Slack, Teams, or any app
+3. When a teammate clicks it, the file opens in their Obsidian
 
-## Releasing new releases
-
-- Update your `manifest.json` with your new version number, such as `1.0.1`, and the minimum Obsidian version required for your latest release.
-- Update your `versions.json` file with `"new-plugin-version": "minimum-obsidian-version"` so older versions of Obsidian can download an older version of your plugin that's compatible.
-- Create new GitHub release using your new version number as the "Tag version". Use the exact version number, don't include a prefix `v`. See here for an example: https://github.com/obsidianmd/obsidian-sample-plugin/releases
-- Upload the files `manifest.json`, `main.js`, `styles.css` as binary attachments. Note: The manifest.json file must be in two places, first the root path of your repository and also in the release.
-- Publish the release.
-
-> You can simplify the version bump process by running `npm version patch`, `npm version minor` or `npm version major` after updating `minAppVersion` manually in `manifest.json`.
-> The command will bump version in `manifest.json` and `package.json`, and add the entry for the new version to `versions.json`
-
-## Adding your plugin to the community plugin list
-
-- Check the [plugin guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines).
-- Publish an initial version.
-- Make sure you have a `README.md` file in the root of your repo.
-- Make a pull request at https://github.com/obsidianmd/obsidian-releases to add your plugin.
-
-## How to use
-
-- Clone this repo.
-- Make sure your NodeJS is at least v16 (`node --version`).
-- `npm i` or `yarn` to install dependencies.
-- `npm run dev` to start compilation in watch mode.
-
-## Manually installing the plugin
-
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/your-plugin-id/`.
-
-## Improve code quality with eslint
-- [ESLint](https://eslint.org/) is a tool that analyzes your code to quickly find problems. You can run ESLint against your plugin to find common bugs and ways to improve your code. 
-- This project already has eslint preconfigured, you can invoke a check by running`npm run lint`
-- Together with a custom eslint [plugin](https://github.com/eslint-plugin) for Obsidan specific code guidelines.
-- A GitHub action is preconfigured to automatically lint every commit on all branches.
-
-## Funding URL
-
-You can include funding URLs where people who use your plugin can financially support it.
-
-The simple way is to set the `fundingUrl` field to your link in your `manifest.json` file:
-
-```json
-{
-    "fundingUrl": "https://buymeacoffee.com"
-}
+The shared link looks like a normal web URL:
+```
+https://yourname.github.io/obsidian-link-sharer/open.html?link=...
 ```
 
-If you have multiple URLs, you can also do:
+When someone clicks it, they're redirected to your Obsidian vault via the `obsidian://` protocol.
 
-```json
-{
-    "fundingUrl": {
-        "Buy Me a Coffee": "https://buymeacoffee.com",
-        "GitHub Sponsor": "https://github.com/sponsors",
-        "Patreon": "https://www.patreon.com/"
-    }
-}
-```
+## Installation
 
-## API Documentation
+### From Obsidian Community Plugins (Recommended)
+1. Open Obsidian Settings
+2. Go to Community Plugins
+3. Search for "Link Sharer"
+4. Install and enable
 
-See https://docs.obsidian.md
+### Manual Installation
+1. Download `main.js` and `manifest.json` from the latest release
+2. Create folder: `YourVault/.obsidian/plugins/obsidian-link-sharer/`
+3. Copy both files into that folder
+4. Restart Obsidian and enable the plugin in Settings > Community Plugins
+
+## Setup GitHub Pages (Required)
+
+For the shareable links to work, you need to host the redirect page on GitHub Pages:
+
+1. **Fork or clone this repository**
+
+2. **Create the gh-pages branch:**
+   ```bash
+   git checkout --orphan gh-pages
+   git rm -rf .
+   mkdir docs
+   cp path/to/open.html docs/
+   git add docs/open.html
+   git commit -m "Add redirect page"
+   git push -u origin gh-pages
+   ```
+
+3. **Enable GitHub Pages:**
+   - Go to your repo Settings > Pages
+   - Source: Deploy from a branch
+   - Branch: `gh-pages`
+   - Folder: `/docs`
+
+4. **Configure the plugin:**
+   - In Obsidian, go to Settings > Link Sharer
+   - Set your GitHub Pages URL (e.g., `https://yourusername.github.io/your-repo-name`)
+
+## Usage
+
+### Context Menu
+- Right-click any file in the file explorer
+- Select **"Copy shareable link"**
+- Link is copied to clipboard
+
+### Command Palette
+- Open Command Palette (Cmd/Ctrl + P)
+- Search for "Copy shareable link for active file"
+- Link for current file is copied
+
+## Settings
+
+| Setting | Description |
+|---------|-------------|
+| **GitHub pages URL** | Base URL for your redirect page (without `/open.html`) |
+| **Vault name override** | Override the vault name used in links. Leave empty to use actual vault name. |
+
+## How It Works Technically
+
+1. Plugin generates an Obsidian URI: `obsidian://open?vault=MyVault&file=Notes/File.md`
+2. URI is encoded using URL-safe Base64 (RFC 4648)
+3. Encoded URI is appended to your GitHub Pages URL
+4. When clicked, the redirect page decodes and redirects to the Obsidian URI
+
+## Requirements
+
+- Obsidian 1.0.0 or higher
+- GitHub account (for hosting the redirect page)
+- Recipients must have Obsidian installed
+
+## Privacy
+
+- No data is sent to any server
+- Links are stateless (all data is in the URL itself)
+- No tracking or analytics
+
+## Security
+
+The plugin and redirect page are fully **open source** - you can review every line of code in this repository.
+
+For additional control, you can **host the redirect page yourself** on your own domain or company server:
+
+1. Copy `docs/open.html` to your own web server
+2. In Obsidian, go to Settings > Link Sharer
+3. Update the "GitHub Pages URL" to your self-hosted URL
+
+This way, you have complete control over the redirect page your team uses.
+
+## License
+
+0-BSD

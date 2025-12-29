@@ -1,99 +1,97 @@
-import {App, Editor, MarkdownView, Modal, Notice, Plugin} from 'obsidian';
-import {DEFAULT_SETTINGS, MyPluginSettings, SampleSettingTab} from "./settings";
+import {Notice, Plugin, TFile} from 'obsidian';
+import {DEFAULT_SETTINGS, LinkSharerSettings, LinkSharerSettingTab} from "./settings";
 
-// Remember to rename these classes and interfaces!
-
-export default class MyPlugin extends Plugin {
-	settings: MyPluginSettings;
+export default class LinkSharerPlugin extends Plugin {
+	settings: LinkSharerSettings;
 
 	async onload() {
 		await this.loadSettings();
 
-		// This creates an icon in the left ribbon.
-		this.addRibbonIcon('dice', 'Sample', (evt: MouseEvent) => {
-			// Called when the user clicks the icon.
-			new Notice('This is a notice!');
-		});
+		// Register file-menu context menu item
+		this.registerEvent(
+			this.app.workspace.on('file-menu', (menu, file) => {
+				if (!(file instanceof TFile)) return;
 
-		// This adds a status bar item to the bottom of the app. Does not work on mobile apps.
-		const statusBarItemEl = this.addStatusBarItem();
-		statusBarItemEl.setText('Status bar text');
+				menu.addItem((item) => {
+					item
+						.setTitle('Copy shareable link')
+						.setIcon('link')
+						.onClick(async () => {
+							const shareableLink = this.generateShareableLink(file);
+							await navigator.clipboard.writeText(shareableLink);
+							new Notice('Shareable link copied to clipboard!');
+						});
+				});
+			})
+		);
 
-		// This adds a simple command that can be triggered anywhere
+		// Add command to copy shareable link for active file
 		this.addCommand({
-			id: 'open-modal-simple',
-			name: 'Open modal (simple)',
-			callback: () => {
-				new SampleModal(this.app).open();
-			}
-		});
-		// This adds an editor command that can perform some operation on the current editor instance
-		this.addCommand({
-			id: 'replace-selected',
-			name: 'Replace selected content',
-			editorCallback: (editor: Editor, view: MarkdownView) => {
-				editor.replaceSelection('Sample editor command');
-			}
-		});
-		// This adds a complex command that can check whether the current state of the app allows execution of the command
-		this.addCommand({
-			id: 'open-modal-complex',
-			name: 'Open modal (complex)',
+			id: 'copy-shareable-link',
+			name: 'Copy shareable link for active file',
 			checkCallback: (checking: boolean) => {
-				// Conditions to check
-				const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (markdownView) {
-					// If checking is true, we're simply "checking" if the command can be run.
-					// If checking is false, then we want to actually perform the operation.
+				const activeFile = this.app.workspace.getActiveFile();
+				if (activeFile) {
 					if (!checking) {
-						new SampleModal(this.app).open();
+						const shareableLink = this.generateShareableLink(activeFile);
+						void navigator.clipboard.writeText(shareableLink);
+						new Notice('Shareable link copied to clipboard!');
 					}
-
-					// This command will only show up in Command Palette when the check function returns true
 					return true;
 				}
 				return false;
 			}
 		});
 
-		// This adds a settings tab so the user can configure various aspects of the plugin
-		this.addSettingTab(new SampleSettingTab(this.app, this));
-
-		// If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
-		// Using this function will automatically remove the event listener when this plugin is disabled.
-		this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
-			new Notice("Click");
-		});
-
-		// When registering intervals, this function will automatically clear the interval when the plugin is disabled.
-		this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
-
+		// Add settings tab
+		this.addSettingTab(new LinkSharerSettingTab(this.app, this));
 	}
 
 	onunload() {
 	}
 
 	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData() as Partial<MyPluginSettings>);
+		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData() as Partial<LinkSharerSettings>);
 	}
 
 	async saveSettings() {
 		await this.saveData(this.settings);
 	}
-}
 
-class SampleModal extends Modal {
-	constructor(app: App) {
-		super(app);
+	/**
+	 * Generate a shareable HTTPS link for a file
+	 */
+	generateShareableLink(file: TFile): string {
+		const obsidianURI = this.createObsidianURI(file);
+		const encodedURI = this.base64UrlEncode(obsidianURI);
+		return `${this.settings.githubPagesUrl}/open.html?link=${encodedURI}`;
 	}
 
-	onOpen() {
-		let {contentEl} = this;
-		contentEl.setText('Woah!');
+	/**
+	 * Create an Obsidian URI for a file
+	 */
+	createObsidianURI(file: TFile): string {
+		const vaultName = this.settings.vaultNameOverride || this.app.vault.getName();
+		const filePath = file.path;
+		return `obsidian://open?vault=${encodeURIComponent(vaultName)}&file=${encodeURIComponent(filePath)}`;
 	}
 
-	onClose() {
-		const {contentEl} = this;
-		contentEl.empty();
+	/**
+	 * URL-safe Base64 encoding (RFC 4648)
+	 * Encodes a string to URL-safe Base64 by:
+	 * 1. UTF-8 encoding the string
+	 * 2. Converting to standard Base64
+	 * 3. Replacing + with -, / with _, and removing = padding
+	 */
+	base64UrlEncode(str: string): string {
+		// UTF-8 encode the string to bytes
+		const encoder = new TextEncoder();
+		const bytes = encoder.encode(str);
+		// Convert bytes to binary string for btoa
+		const binString = Array.from(bytes, (byte) => String.fromCharCode(byte)).join('');
+		// Convert to base64
+		const base64 = btoa(binString);
+		// Make it URL-safe: replace + with -, / with _, remove = padding
+		return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
 	}
 }
