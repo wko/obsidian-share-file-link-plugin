@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Obsidian Link Sharer - Share vault links with your team</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+    .tagline {
+      font-size: 1.25rem;
+      opacity: 0.9;
+      margin-bottom: 40px;
+    }
+    .use-case {
+      background: rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 40px;
+    }
+    .use-case h2 {
+      font-size: 1.1rem;
+      margin-bottom: 12px;
+      opacity: 0.9;
+    }
+    .use-case p {
+      font-size: 1rem;
+    }
+    .chat-example {
+      background: rgba(0,0,0,0.2);
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 16px;
+      font-family: monospace;
+      font-size: 0.9rem;
+    }
+    .section {
+      margin-bottom: 40px;
+    }
+    .section h2 {
+      font-size: 1.5rem;
+      margin-bottom: 16px;
+    }
+    .steps {
+      list-style: none;
+      counter-reset: step;
+    }
+    .steps li {
+      counter-increment: step;
+      margin-bottom: 16px;
+      padding-left: 40px;
+      position: relative;
+    }
+    .steps li::before {
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 28px;
+      height: 28px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+    .buttons {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+    .btn {
+      display: inline-block;
+      padding: 12px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .btn-primary {
+      background: white;
+      color: #764ba2;
+    }
+    .btn-secondary {
+      background: rgba(255,255,255,0.2);
+      color: white;
+    }
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+    .feature {
+      background: rgba(255,255,255,0.1);
+      padding: 20px;
+      border-radius: 8px;
+    }
+    .feature h3 {
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+    .feature p {
+      font-size: 0.9rem;
+      opacity: 0.85;
+    }
+    footer {
+      margin-top: 60px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.2);
+      text-align: center;
+      opacity: 0.8;
+      font-size: 0.9rem;
+    }
+    footer a {
+      color: white;
+    }
+    @media (max-width: 600px) {
+      h1 { font-size: 1.8rem; }
+      .tagline { font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Obsidian Link Sharer</h1>
+    <p class="tagline">Share Obsidian vault links with your team in Slack, Teams, and other apps</p>
+
+    <div class="use-case">
+      <h2>Perfect for teams working on a shared vault</h2>
+      <p>When you're collaborating with others on the same Obsidian vault, you often want to point teammates to specific notes. This plugin lets you create clickable links that work in any messaging app.</p>
+      <div class="chat-example">
+        <strong>You in Slack:</strong> "Here are the meeting notes: <u>https://your-link.github.io/open.html?link=...</u>"<br>
+        <strong>Teammate:</strong> *clicks link* → File opens in their Obsidian
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>How it works</h2>
+      <ol class="steps">
+        <li><strong>Right-click any file</strong> in Obsidian and select "Copy Shareable Link"</li>
+        <li><strong>Paste the link</strong> in Slack, Teams, WhatsApp, email, or any app</li>
+        <li><strong>Teammates click the link</strong> and the file opens directly in their Obsidian</li>
+      </ol>
+    </div>
+
+    <div class="section">
+      <h2>Features</h2>
+      <div class="features">
+        <div class="feature">
+          <h3>Works everywhere</h3>
+          <p>Standard HTTPS links that work in Slack, Teams, WhatsApp, email, and more</p>
+        </div>
+        <div class="feature">
+          <h3>No server required</h3>
+          <p>Links are stateless - all data is encoded in the URL itself</p>
+        </div>
+        <div class="feature">
+          <h3>Private by design</h3>
+          <p>No tracking, no analytics, no data collection</p>
+        </div>
+        <div class="feature">
+          <h3>Open source</h3>
+          <p>All code is <a href="https://github.com/wko/obsidian-share-file-link-plugin">open source</a> and can be reviewed</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Security</h2>
+      <p>The plugin and redirect page are fully open source - you can review every line of code in the <a href="https://github.com/wko/obsidian-share-file-link-plugin">GitHub repository</a>.</p>
+      <p style="margin-top: 12px;">For additional control, you can host the redirect page yourself on your own domain or company server. Simply update the redirect URL in the plugin settings to point to your self-hosted version.</p>
+    </div>
+
+    <div class="section">
+      <h2>Get started</h2>
+      <p>Install from Obsidian Community Plugins or download from GitHub.</p>
+      <div class="buttons">
+        <a href="obsidian://show-plugin?id=obsidian-link-sharer" class="btn btn-primary">Install in Obsidian</a>
+        <a href="https://github.com/wko/obsidian-share-file-link-plugin" class="btn btn-secondary">View on GitHub</a>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Requirements</h2>
+      <ul class="steps">
+        <li>Obsidian 1.0.0 or higher</li>
+        <li>GitHub Pages to host the redirect page (free)</li>
+        <li>Recipients need Obsidian installed with access to the same vault</li>
+      </ul>
+    </div>
+
+    <footer>
+      <p>
+        <a href="https://github.com/wko/obsidian-share-file-link-plugin">GitHub</a> ·
+        <a href="https://obsidian.md">Get Obsidian</a> ·
+        License: 0-BSD
+      </p>
+    </footer>
+  </div>
+</body>
+</html>
