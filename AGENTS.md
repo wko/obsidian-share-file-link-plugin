@@ -19,6 +19,41 @@ This document provides context for AI agents working on this Obsidian plugin.
 4. Final link: `https://<github-pages>/open.html?link=<encoded>`
 5. When clicked, redirect page decodes and redirects to Obsidian
 
+## Generating Links (For Agents)
+
+Agents can generate shareable links **without Base64 encoding** using direct URL parameters:
+
+```
+https://wko.github.io/obsidian-share-file-link-plugin/open.html?vault=<vault>&file=<path>
+```
+
+### Examples
+
+Simple file:
+```
+https://wko.github.io/obsidian-share-file-link-plugin/open.html?vault=MyVault&file=Notes/Meeting.md
+```
+
+File with spaces (URL encode the path):
+```
+https://wko.github.io/obsidian-share-file-link-plugin/open.html?vault=MyVault&file=Notes/Project%20Plan.md
+```
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| `vault` | Yes | The vault name (URL encoded if contains special chars) |
+| `file` | Yes | Path to file relative to vault root (URL encoded) |
+
+### URL Encoding
+
+Only standard URL encoding is needed. Most characters can be left as-is, but encode:
+- Spaces → `%20`
+- `#` → `%23`
+- `?` → `%3F`
+- `&` → `%26`
+
 ## Development
 
 ```bash

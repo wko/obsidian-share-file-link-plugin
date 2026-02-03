@@ -91,6 +91,25 @@ For the shareable links to work, you need to host the redirect page on GitHub Pa
 3. Encoded URI is appended to your GitHub Pages URL
 4. When clicked, the redirect page decodes and redirects to the Obsidian URI
 
+## Programmatic Link Generation
+
+If you're building tools or using AI agents that need to generate shareable links, you can use **direct URL parameters** instead of Base64 encoding:
+
+```
+https://yourname.github.io/your-repo/open.html?vault=MyVault&file=Notes/File.md
+```
+
+Simply provide:
+- `vault` - Your vault name
+- `file` - Path to the file (relative to vault root)
+
+URL encode special characters in the path (spaces become `%20`, etc.).
+
+**Example with spaces:**
+```
+https://yourname.github.io/your-repo/open.html?vault=MyVault&file=Notes/Project%20Plan.md
+```
+
 ## Requirements
 
 - Obsidian 1.0.0 or higher

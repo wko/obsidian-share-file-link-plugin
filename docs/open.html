@@ -64,6 +64,12 @@
       }
     }
 
+    // Construct Obsidian URI from plain vault and file parameters (for agents)
+    function constructObsidianURI(vault, file) {
+      if (!vault || !file) return null;
+      return `obsidian://open?vault=${encodeURIComponent(vault)}&file=${encodeURIComponent(file)}`;
+    }
+
     function showError(message) {
       document.getElementById('title').textContent = 'Error';
       document.getElementById('spinner').classList.add('hidden');
@@ -80,21 +86,32 @@
     (function() {
       const params = new URLSearchParams(window.location.search);
       const encodedLink = params.get('link');
+      const vault = params.get('vault');
+      const file = params.get('file');
 
-      if (!encodedLink) {
-        showError('No link provided. The URL appears to be incomplete.');
-        return;
+      let obsidianURI = null;
+
+      // Method 1: Encoded link (existing format)
+      if (encodedLink) {
+        const decoded = base64UrlDecode(encodedLink);
+        if (decoded && decoded.startsWith('obsidian://')) {
+          obsidianURI = decoded;
+        }
       }
 
-      const obsidianURI = base64UrlDecode(encodedLink);
+      // Method 2: Direct vault+file params (for agents without Base64 encoding)
+      if (!obsidianURI && (vault || file)) {
+        if (vault && file) {
+          obsidianURI = constructObsidianURI(vault, file);
+        } else {
+          showError('Missing parameter. Both "vault" and "file" are required when using direct parameters.');
+          return;
+        }
+      }
 
+      // Error handling if neither method provided valid input
       if (!obsidianURI) {
-        showError('Invalid link. The encoded data could not be decoded.');
-        return;
-      }
-
-      if (!obsidianURI.startsWith('obsidian://')) {
-        showError('Invalid link. Expected an Obsidian URI.');
+        showError('No link provided. Use either "?link=<encoded>" or "?vault=<name>&file=<path>".');
         return;
       }
 
