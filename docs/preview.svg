@@ -1,0 +1,34 @@
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <!-- Solid purple background (primary brand color) -->
+  <rect width="1200" height="630" fill="#7c3aed"/>
+
+  <!-- Decorative circles -->
+  <circle cx="100" cy="100" r="200" fill="#8b5cf6" opacity="0.3"/>
+  <circle cx="1100" cy="530" r="250" fill="#6d28d9" opacity="0.4"/>
+
+  <!-- Document icon -->
+  <g transform="translate(600, 240)">
+    <!-- Document background -->
+    <rect x="-70" y="-90" width="140" height="180" rx="10" fill="white" opacity="0.15"/>
+    <!-- Document lines -->
+    <rect x="-45" y="-55" width="90" height="8" rx="4" fill="white" opacity="0.9"/>
+    <rect x="-45" y="-30" width="70" height="8" rx="4" fill="white" opacity="0.7"/>
+    <rect x="-45" y="-5" width="80" height="8" rx="4" fill="white" opacity="0.7"/>
+    <rect x="-45" y="20" width="50" height="8" rx="4" fill="white" opacity="0.7"/>
+    <!-- Link indicator -->
+    <circle cx="50" cy="60" r="25" fill="#a78bfa"/>
+    <text x="50" y="68" font-family="Arial" font-size="28" fill="white" text-anchor="middle">↗</text>
+  </g>
+
+  <!-- Main title -->
+  <text x="600" y="430" font-family="Arial, Helvetica, sans-serif"
+        font-size="56" font-weight="bold" fill="white" text-anchor="middle">
+    Open in Obsidian
+  </text>
+
+  <!-- Subtitle -->
+  <text x="600" y="480" font-family="Arial, Helvetica, sans-serif"
+        font-size="24" fill="white" text-anchor="middle" opacity="0.85">
+    Click to open this note in your vault
+  </text>
+</svg>
